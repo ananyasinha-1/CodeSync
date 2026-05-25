@@ -5,6 +5,8 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import compression from 'compression';
 import mongoose from 'mongoose';
+import session from 'express-session';
+import passport from './config/passport.js';
 
 import authRoutes from './routes/authRoutes.js';
 import workspaceRoutes from './routes/workspaceRoutes.js';
@@ -37,6 +39,12 @@ app.use(
 
 // ─── HTTP Middleware ───────────────────────────────────────────────────────────
 app.use(express.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'codesync_secret',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
 app.set('io', io);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
@@ -68,7 +76,6 @@ io.on('connection', (socket) => {
   socket.on('join_workspace', async ({ workspaceId, username, color, userId }) => {
     if (!workspaceId) return;
 
-    // Verify membership and fetch role
     const membership = await WorkspaceMember.findOne({ workspaceId, userId });
     if (!membership) {
       console.log(`[socket] Join denied: User ${userId} is not a member of ${workspaceId}`);
@@ -83,7 +90,6 @@ io.on('connection', (socket) => {
     
     console.log(`[socket] ${username} (${membership.role}) joined workspace:${workspaceId}`);
     
-    // Log Activity
     await ActivityLog.create({
       workspaceId,
       userId,
@@ -99,7 +105,6 @@ io.on('connection', (socket) => {
       role: membership.role 
     });
 
-    // Notify all of activity update
     io.to(`workspace:${workspaceId}`).emit('activity_update');
   });
 
@@ -217,7 +222,6 @@ io.on('connection', (socket) => {
     
     console.log(`[voice] ${username} (${userId}) joined voice chat in workspace:${workspaceId}`);
     
-    // Notify others in the voice chat
     socket.to(`voice:${workspaceId}`).emit('voice_user_joined', { 
       userId, 
       username,
@@ -233,13 +237,11 @@ io.on('connection', (socket) => {
     
     console.log(`[voice] User ${userId} left voice chat in workspace:${workspaceId}`);
     
-    // Notify others
     socket.to(`voice:${workspaceId}`).emit('voice_user_left', { userId });
   });
 
   socket.on('voice_offer', ({ to, offer }) => {
     console.log(`[voice] Forwarding offer from ${socket.data.voiceUserId} to ${to}`);
-    // Broadcast to all in voice chat so the right peer receives it
     socket.to(`voice:${socket.data.workspaceId}`).emit('voice_offer', {
       from: socket.data.voiceUserId,
       offer
@@ -248,7 +250,6 @@ io.on('connection', (socket) => {
 
   socket.on('voice_answer', ({ to, answer }) => {
     console.log(`[voice] Forwarding answer from ${socket.data.voiceUserId} to ${to}`);
-    // Broadcast to all in voice chat so the right peer receives it
     socket.to(`voice:${socket.data.workspaceId}`).emit('voice_answer', {
       from: socket.data.voiceUserId,
       answer
@@ -257,7 +258,6 @@ io.on('connection', (socket) => {
 
   socket.on('voice_ice_candidate', ({ to, candidate }) => {
     console.log(`[voice] Forwarding ICE candidate from ${socket.data.voiceUserId} to ${to}`);
-    // Broadcast to all in voice chat so the right peer receives it
     socket.to(`voice:${socket.data.workspaceId}`).emit('voice_ice_candidate', {
       from: socket.data.voiceUserId,
       candidate
@@ -271,12 +271,10 @@ io.on('connection', (socket) => {
     const username = socket.data.username;
 
     if (workspaceId && userId) {
-      // If user was in voice chat, notify others
       if (socket.data.inVoiceChat) {
         socket.to(`voice:${workspaceId}`).emit('voice_user_left', { userId });
       }
 
-      // Log Activity
       await ActivityLog.create({
         workspaceId,
         userId,
@@ -289,7 +287,6 @@ io.on('connection', (socket) => {
         username,
       });
 
-      // Notify all of activity update
       io.to(`workspace:${workspaceId}`).emit('activity_update');
     }
   });
