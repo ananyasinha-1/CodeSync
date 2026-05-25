@@ -80,6 +80,62 @@ export const login = async (req, res) => {
   }
 };
 
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).lean();
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('[getProfile error]', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { username, email, currentPassword, newPassword, avatar, preferences } = req.body;
+
+    const user = await User.findById(req.user.id).select('+passwordHash');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Password change
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ message: 'Current password is required to set a new password.' });
+      }
+      const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+      if (!isMatch) return res.status(400).json({ message: 'Current password is incorrect.' });
+      if (newPassword.length < 6) return res.status(400).json({ message: 'New password must be at least 6 characters.' });
+      user.passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    }
+
+    // Username uniqueness check
+    if (username && username !== user.username) {
+      const taken = await User.findOne({ username, _id: { $ne: user._id } });
+      if (taken) return res.status(409).json({ message: 'Username already taken.' });
+      user.username = username;
+    }
+
+    // Email uniqueness check
+    if (email && email.toLowerCase() !== user.email) {
+      const taken = await User.findOne({ email: email.toLowerCase(), _id: { $ne: user._id } });
+      if (taken) return res.status(409).json({ message: 'Email already in use.' });
+      user.email = email.toLowerCase();
+    }
+
+    if (avatar !== undefined) user.avatar = avatar;
+    if (preferences) user.preferences = { ...user.preferences, ...preferences };
+
+    await user.save();
+
+    const updated = user.toJSON();
+    return res.status(200).json({ message: 'Profile updated successfully.', user: updated });
+  } catch (error) {
+    console.error('[updateProfile error]', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;

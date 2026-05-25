@@ -114,7 +114,7 @@ const RecentActivity = ({ workspaces, refreshTrigger }) => {
 }
 
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
-const Sidebar = ({ user, workspaceCount, activeTab, onTabChange, onLogout, onRefresh }) => (
+const Sidebar = ({ user, workspaceCount, activeTab, onTabChange, onLogout, onRefresh, onSettings }) => (
   <aside className="sidebar w-64 bg-gray-900/80 backdrop-blur-xl border-r border-gray-700/60 flex flex-col flex-shrink-0 h-screen sticky top-0 z-10">
     <div className="sidebar-logo flex items-center gap-3 px-6 py-5 border-b border-gray-700/60 cursor-pointer hover:bg-white/5 transition" onClick={onRefresh} title="Refresh workspaces">
       <span className="logo-icon text-yellow-400 text-xl">⚡</span>
@@ -161,6 +161,9 @@ const Sidebar = ({ user, workspaceCount, activeTab, onTabChange, onLogout, onRef
           <div className="sidebar-user-role text-xs text-gray-400 truncate">{user?.email}</div>
         </div>
       </div>
+      <button className="btn btn-ghost w-full flex items-center justify-start gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition mb-1" onClick={onSettings}>
+        ⚙ Settings
+      </button>
       <button
         className="btn btn-ghost btn-error w-full flex items-center justify-start gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition"
         onClick={onLogout}
@@ -226,6 +229,7 @@ const Dashboard = () => {
         onTabChange={setActiveTab}
         onLogout={handleLogout}
         onRefresh={loadWorkspaces}
+        onSettings={() => navigate('/settings')}
       />
 
       <main className="dashboard-main flex-1 flex flex-col min-w-0 bg-[#0B0C10]">
