@@ -1,16 +1,13 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
-import { signup, login, deleteUser } from '../controllers/authController.js';
+import { signup, login, deleteUser, getProfile, updateProfile } from '../controllers/authController.js';
 
 const router = express.Router();
 
-// POST /api/auth/signup
 router.post('/signup', signup);
-
-// POST /api/auth/login
 router.post('/login', login);
-
-// DELETE /api/auth/:id
+router.get('/profile', authMiddleware, getProfile);
+router.patch('/profile', authMiddleware, updateProfile);
 router.delete('/:id', authMiddleware, deleteUser);
 
 export default router;
