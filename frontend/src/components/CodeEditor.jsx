@@ -41,7 +41,7 @@ const CodeEditor = ({
     // Only trigger onChange if the value actually changed from user input
     // (not from programmatic updates via props)
     if (safeValue !== valueRef.current) {
-      console.log('[CodeEditor] User edit detected:', { 
+      //console.log('[CodeEditor] User edit detected:', { 
         language, 
         valueLength: safeValue.length 
       });
