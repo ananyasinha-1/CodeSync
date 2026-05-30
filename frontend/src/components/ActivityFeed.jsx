@@ -19,14 +19,14 @@ const ActivityFeed = ({ socket, workspaceId }) => {
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
 
-  console.log('[ActivityFeed] Render - workspaceId:', workspaceId, 'activities count:', activities.length, 'loading:', loading);
+  //console.log('[ActivityFeed] Render - workspaceId:', workspaceId, 'activities count:', activities.length, 'loading:', loading);
 
   const loadActivities = async () => {
     try {
-      console.log('[ActivityFeed] Loading activities for workspace:', workspaceId);
+      //console.log('[ActivityFeed] Loading activities for workspace:', workspaceId);
       const res = await api.get(`/api/workspaces/${workspaceId}/activity`)
-      console.log('[ActivityFeed] Received activities:', res.data);
-      console.log('[ActivityFeed] Activities count:', res.data?.length);
+      //console.log('[ActivityFeed] Received activities:', res.data);
+      //console.log('[ActivityFeed] Activities count:', res.data?.length);
       setActivities(res.data)
     } catch (error) { 
       console.error('[ActivityFeed] Error loading activities:', error);

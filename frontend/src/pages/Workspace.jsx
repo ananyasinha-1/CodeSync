@@ -85,16 +85,16 @@ const Workspace = () => {
 
     const openFile = async () => {
       try {
-        console.log('[Workspace] Switching to file:', activeFileId);
+        //console.log('[Workspace] Switching to file:', activeFileId);
         
         // Save previous file immediately before switching
         if (previousFileRef.current && previousFileRef.current !== activeFileId && currentCodeRef.current !== undefined) {
-          console.log('[Workspace] Saving previous file:', previousFileRef.current, 'with', currentCodeRef.current.length, 'chars');
+          //console.log('[Workspace] Saving previous file:', previousFileRef.current, 'with', currentCodeRef.current.length, 'chars');
           
           // Immediate save to database
           try {
             await api.put(`/api/files/${previousFileRef.current}`, { content: currentCodeRef.current });
-            console.log('[Workspace] Previous file saved successfully');
+            //console.log('[Workspace] Previous file saved successfully');
           } catch (saveErr) {
             console.error('[Workspace] Failed to save previous file:', saveErr);
           }
@@ -161,10 +161,10 @@ const Workspace = () => {
         // Check if file already exists by ID
         const exists = prev.some(f => String(f._id) === String(newFile._id));
         if (exists) {
-          console.log('[socket] file_created: File already exists, skipping', newFile._id);
+          //console.log('[socket] file_created: File already exists, skipping', newFile._id);
           return prev;
         }
-        console.log('[socket] file_created: Adding new file', newFile._id);
+        //console.log('[socket] file_created: Adding new file', newFile._id);
         return [...prev, newFile];
       });
     });
@@ -174,10 +174,10 @@ const Workspace = () => {
         // Check if folder already exists by ID
         const exists = prev.some(f => String(f._id) === String(newFolder._id));
         if (exists) {
-          console.log('[socket] folder_created: Folder already exists, skipping', newFolder._id);
+          //console.log('[socket] folder_created: Folder already exists, skipping', newFolder._id);
           return prev;
         }
-        console.log('[socket] folder_created: Adding new folder', newFolder._id);
+        //console.log('[socket] folder_created: Adding new folder', newFolder._id);
         return [...prev, newFolder];
       });
     });
@@ -231,7 +231,7 @@ const Workspace = () => {
   const handleCodeChange = useCallback(
     (e) => {
       const newCode = e.target.value;
-      console.log('[Workspace] handleCodeChange:', {
+      //console.log('[Workspace] handleCodeChange:', {
         fileId: activeFileId,
         codeLength: newCode?.length,
         isRemote: isRemoteChange.current,
