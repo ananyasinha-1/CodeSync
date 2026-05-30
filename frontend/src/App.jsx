@@ -8,6 +8,7 @@ const Signup = lazy(() => import('./pages/Signup'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Workspace = lazy(() => import('./pages/Workspace'))
 const ProfileSettings = lazy(() => import('./pages/ProfileSettings'))
+const AuthCallback = lazy(() => import('./pages/AuthCallback'))
 
 const RouteLoader = ({ children }) => {
   const [loading, setLoading] = useState(false);
@@ -41,20 +42,19 @@ const RouteLoader = ({ children }) => {
 
 const App = () => {
   const { isAuthenticated, loading } = useAuth()
-
   if (loading) return null
 
   return (
     <Suspense fallback={<div className="fixed inset-0 bg-[#0B0C10] flex items-center justify-center z-50"><div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" /></div>}>
       <RouteLoader>
         <Routes>
+          {/* Public routes */}
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
           <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />} />
-
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/workspace/:id" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-
           <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />} />
           <Route path="*" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />} />
         </Routes>

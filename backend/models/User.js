@@ -20,17 +20,12 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: true,
+      required: false,
       select: false,
     },
-    avatar: {
+    googleId: {
       type: String,
-      default: '',
-    },
-    preferences: {
-      fontSize: { type: Number, default: 14 },
-      keyBinding: { type: String, enum: ['default', 'vim', 'emacs'], default: 'default' },
-      defaultLanguage: { type: String, default: 'javascript' },
+      default: null,
     },
   },
   {
