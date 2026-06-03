@@ -231,12 +231,7 @@ const Workspace = () => {
   const handleCodeChange = useCallback(
     (e) => {
       const newCode = e.target.value;
-      //console.log('[Workspace] handleCodeChange:', {
-        fileId: activeFileId,
-        codeLength: newCode?.length,
-        isRemote: isRemoteChange.current,
-        myRole
-      });
+      
       
       setCode(newCode);
       currentCodeRef.current = newCode; // Update ref for saving
