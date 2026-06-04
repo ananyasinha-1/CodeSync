@@ -717,6 +717,8 @@ PORT=3001
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 FRONTEND_URL=http://localhost:5173
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
 Start the backend:
@@ -759,6 +761,9 @@ Navigate to **http://localhost:5173** in your browser.
 | `MONGO_URI` | MongoDB connection string | `mongodb+srv://...` |
 | `JWT_SECRET` | Secret key for JWT signing | `your-secret-key` |
 | `FRONTEND_URL` | Frontend origin for CORS | `http://localhost:5173` |
+| `GOOGLE_CLIENT_ID` |Google OAuth 2.0 Client ID |`1234567890-abc...apps.googleusercontent.com` |
+|`GOOGLE_CLIENT_SECRET`| Google OAuth 2.0 Client Secret|`GOCSPX-...`|
+
 
 ### Frontend (`.env.development`)
 
