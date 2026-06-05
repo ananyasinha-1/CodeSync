@@ -35,7 +35,7 @@ const VersionHistory = ({ fileId, onRestore, canEdit }) => {
   const handleRestore = async (versionId) => {
     if (!window.confirm('Restore this version? current changes will be overwritten.')) return;
     try {
-      const data = await restoreVersion(versionId);
+      const data = await restoreVersion(fileId, versionId);
       onRestore(data.file.content);
       toast.success('Version restored');
     } catch (err) {

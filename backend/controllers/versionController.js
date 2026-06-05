@@ -40,7 +40,7 @@ export const getHistory = async (req, res) => {
   }
 };
 
-// ─── POST /api/files/restore/:versionId ──────────────────────────────────────
+// ─── POST /api/files/restore/:fileId/:versionId ──────────────────────────────
 export const restoreVersion = async (req, res) => {
   try {
     const { versionId } = req.params;

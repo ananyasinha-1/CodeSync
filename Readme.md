@@ -502,7 +502,7 @@ CodeSync/
 | `DELETE` | `/:id` | Delete file or folder (recursive) | Editor |
 | `POST` | `/:fileId/version` | Save version snapshot | Editor |
 | `GET` | `/:fileId/history` | Get version history | Viewer |
-| `POST` | `/restore/:versionId` | Restore a file version | Editor |
+| `POST` | `/restore/:fileId/:versionId` | Restore a file version | Editor |
 
 ---
 
@@ -666,7 +666,7 @@ Editor clicks "Save Version" icon
         │
         ▼
   User clicks "Restore" on a past version
-        │  POST /api/files/restore/:versionId
+        │  POST /api/files/restore/:fileId/:versionId
         ▼
   File.content overwritten with snapshot content
   (Socket will pick up and sync to all clients)
@@ -805,5 +805,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 <p align="center">
   <b>Built with ❤️ Alok Kumar Sharma</b>
 </p>
-
 
