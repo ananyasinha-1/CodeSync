@@ -1,11 +1,7 @@
 import WorkspaceMember from '../models/WorkspaceMember.js';
 import File from '../models/File.js';
 
-/**
- * verifyFileAccess
- * Checks if the user has access to the workspace that owns the file.
- * Attaches req.membership.role.
- */
+
 export const verifyFileAccess = async (req, res, next) => {
   try {
     const { id, fileId } = req.params;
