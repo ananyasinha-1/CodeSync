@@ -1,6 +1,10 @@
 import WorkspaceMember from '../models/WorkspaceMember.js';
 
-
+/**
+ * verifyMembership
+ * Checks that req.user is a member of the workspace in req.params.id or req.params.workspaceId.
+ * Attaches req.membership = { role } on success.
+ */
 export const verifyMembership = async (req, res, next) => {
   try {
     const workspaceId = req.params.workspaceId || req.params.id;
