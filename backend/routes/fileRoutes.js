@@ -38,6 +38,6 @@ router.delete('/:id', verifyFileAccess, checkRole('editor'), deleteFile);
 // Version history
 router.post('/:fileId/version', verifyFileAccess, checkRole('editor'), saveVersion);
 router.get('/:fileId/history', verifyFileAccess, getHistory);
-router.post('/restore/:versionId', verifyFileAccess, checkRole('editor'), restoreVersion);
+router.post('/restore/:fileId/:versionId', verifyFileAccess, checkRole('editor'), restoreVersion);
 
 export default router;
