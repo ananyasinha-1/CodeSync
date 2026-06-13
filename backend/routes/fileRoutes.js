@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { isEditor, requireRole, checkRole } from '../middleware/permissionMiddleware.js';
 import { verifyFileAccess } from '../middleware/filePermission.js';
@@ -16,6 +17,13 @@ import {
 } from '../controllers/versionController.js';
 
 const router = express.Router();
+const restoreVersionRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many requests. Please try again later.' }
+});
 
 router.use(authMiddleware);
 
@@ -38,6 +46,6 @@ router.delete('/:id', verifyFileAccess, checkRole('editor'), deleteFile);
 // Version history
 router.post('/:fileId/version', verifyFileAccess, checkRole('editor'), saveVersion);
 router.get('/:fileId/history', verifyFileAccess, getHistory);
-router.post('/restore/:fileId/:versionId', verifyFileAccess, checkRole('editor'), restoreVersion);
+router.post('/restore/:fileId/:versionId', restoreVersionRateLimit, verifyFileAccess, checkRole('editor'), restoreVersion);
 
 export default router;
