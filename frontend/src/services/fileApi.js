@@ -44,3 +44,4 @@ export const restoreVersion = async (fileId, versionId) => {
   const res = await api.post(`/api/files/restore/${fileId}/${versionId}`);
   return res.data;
 };
+

@@ -43,11 +43,15 @@ export const getHistory = async (req, res) => {
 // ─── POST /api/files/restore/:fileId/:versionId ──────────────────────────────
 export const restoreVersion = async (req, res) => {
   try {
-    const { versionId } = req.params;
+    const { fileId, versionId } = req.params;
 
     const version = await FileVersion.findById(versionId);
     if (!version) {
       return res.status(404).json({ message: 'Version not found.' });
+    }
+
+    if (version.fileId.toString() !== fileId) {
+      return res.status(403).json({ message: 'Version does not belong to this file.' });
     }
 
     const file = await File.findByIdAndUpdate(
